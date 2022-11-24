@@ -27,4 +27,18 @@ asFlow() extension functions on various types to convert them into flows: (1..5)
 
 
 
+#how live data work internally : 
+
+After diving in the Android Room code, I found out some things:
+
+Room annotation processor generates code from Room annotations (@Query, @Insert...) using javapoet library
+
+Depending on the result type of the query (QueryMethodProcessor), it uses a "binder" or another one. In the case of LiveData, it uses LiveDataQueryResultBinder.
+
+LiveDataQueryResultBinder generates a LiveData class that contains a field _observer of type InvalidationTracker.Observer, responsible of listen to database changes.
+
+Then, basically, when there is any change in the database, LiveData is invalidated and client (your repository) is notified.
+
+
+
 
